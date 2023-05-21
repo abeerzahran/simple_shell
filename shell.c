@@ -29,7 +29,7 @@ args[0] = command;
 args[1] = NULL;
 pid = fork();
 if (pid == 0)
-{execve(command, args, NULL);
+{execve(args[0], args, NULL);
 perror("./shell");
 exit(EXIT_FAILURE); }
 else if (pid < 0)
