@@ -37,7 +37,7 @@ exit(EXIT_FAILURE);
 }
 else if (pid < 0)
 {
-  perror("fork");
+	perror("fork");
 }
 else
 {
