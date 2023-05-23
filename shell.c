@@ -3,38 +3,47 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include "shell.h"
-#define MAX_ARGS 10
 /**
 * main - PID
 * Return: Always 0.
 */
 int main(void)
 {
+char *command = NULL;
+size_t command_size = 0;
+ssize_t input_length;
 char *args[2];
-int status;
 pid_t pid;
-char *command;
-size_t size = 100;
-int i = 0;
 while (1)
-{_puts("#cisfun$ ");
+{
+_puts("#cisfun$ ");
 fflush(stdout);
-command = malloc(sizeof(char) * (size));
-if (getline(&command, &size, stdin) == -1)
-	{ break; }
-while (command[i] != '\n' && command[i] != '\0')
-	{ i++; }
-command[i] = '\0';
+input_length = getline(&command, &command_size, stdin);
+if (input_length == -1)
+{
+break;
+}
+if (command[0] == '\n')
+continue;
+command[input_length - 1] = '\0';
 args[0] = command;
 args[1] = NULL;
 pid = fork();
 if (pid == 0)
-{execve(args[0], args, NULL);
-perror("./shell");
-exit(EXIT_FAILURE); }
+{
+execve(command, args, NULL);
+perror("Error");
+exit(EXIT_FAILURE);
+}
 else if (pid < 0)
-{ perror("fork"); }
+{
+  perror("fork");
+}
 else
-{ waitpid(pid, &status, 0); }}
+{
+waitpid(pid, NULL, 0);
+}
+}
 free(command);
-return (0); }
+return (0);
+}

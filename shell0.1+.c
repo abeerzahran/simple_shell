@@ -2,51 +2,51 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/wait.h>
-#include "stringfun.c"
+#include <string.h>
+#include "shell.h"
 #define MAX_ARGS 10
 /**
 * main - PID
 * Return: Always 0.
 */
 int main(void)
-{char *args[MAX_ARGS];
-int status;
-pid_t pid;
-char *command;
-size_t size = 100;
-int num_args = 1;
-int i = 0;
-while (1)
-{_puts("#cisfun$ ");
-fflush(stdout);
-command = malloc(sizeof(char) * (size));
-if (!command)
-{ free(command);
-return (0); }
-if (getline(&command, &size, stdin) == -1)
-{ break; }
-while (command[i] != '\n' && command[i] != '\0')
-{ i++; }
-command[i] = '\0';
-args[0] = command;
-for (i = 0; command[i] != '\0'; i++)
 {
-if (command[i] == ' ')
-{command[i] = '\0';
-args[num_args] = &command[i + 1];
-num_args++;
-if (num_args >= MAX_ARGS)
-{ break; }}}
-args[num_args] = NULL;
+char *command = NULL;
+size_t command_size = 0;
+ssize_t input_length;
+size_t arg_count = 0;
+pid_t pid;
+char *token;
+char **args;
+while (1)
+{
+_puts("#cisfun$ ");
+fflush(stdout);
+input_length = getline(&command, &command_size, stdin);
+if (input_length == -1)
+{ break; }
+if (command[0] == '\n')
+continue;
+args = malloc(sizeof(char *) * (MAX_ARGS + 1));
+if (!args)
+{ perror("./shell");
+exit(EXIT_FAILURE); }
+command[input_length - 1] = '\0';
+token = strtok(command, " ");
+while (token != NULL && arg_count < MAX_ARGS)
+{ args[arg_count++] = token;
+token = strtok(NULL, " "); }
+args[arg_count] = NULL;
 pid = fork();
 if (pid == 0)
-{execve(args[0], args, NULL);
+{ execve(args[0], args, NULL);
 perror("./shell");
 exit(EXIT_FAILURE); }
 else if (pid < 0)
-{ perror("./shell"); }
+{ perror("fork"); }
 else
-{ waitpid(pid, &status, 0); } }
+{ waitpid(pid, NULL, 0); }
+arg_count = 0;
+free(args); }
 free(command);
-return (0);
-}
+return (0); }
