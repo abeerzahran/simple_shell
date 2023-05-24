@@ -3,7 +3,6 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <string.h>
-#include "shell.h"
 #define MAX_ARGS 10
 /**
 * main - PID
@@ -20,7 +19,7 @@ char *token;
 char **args;
 while (1)
 {
-_puts("#cisfun$ ");
+printf("#cisfun$ ");
 fflush(stdout);
 input_length = getline(&command, &command_size, stdin);
 if (input_length == -1)
