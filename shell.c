@@ -1,12 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/wait.h>
-/**
-* main - PID
-* Return: Always 0.
-*/
-int main(void)
 {
 char *command = NULL;
 size_t command_size = 0;
@@ -15,7 +6,7 @@ char *args[2];
 pid_t pid;
 while (1)
 {
-printf("#cisfun$ ");
+_puts("#cisfun$ ");
 fflush(stdout);
 input_length = getline(&command, &command_size, stdin);
 if (input_length == -1)
